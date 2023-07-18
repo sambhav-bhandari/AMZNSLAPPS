@@ -11,27 +11,19 @@ def extract_categories(row):
     return row
 
 def get_bsr(df, date):
-    df = df.apply(extract_categories, axis=1)
-    df = df[
-        [
-            'ASIN',
-            'Account Title',
-            'Market Place',
-            'Active',
-            'Category 0',
-            'Category 0 Sales Rank',
-            'Category 1',
-            'Category 1 Sales Rank',
-            'Category 2',
-            'Category 2 Sales Rank',
-            'Category 3',
-            'Category 3 Sales Rank',
-            'Currency',
-            'Price',
-            'Sales Rank',
-            'Title'
-            ]
-        ]
+    category_cols = [col for col in df.columns if col.startswith('Category')]
+    select_cols = [
+        'ASIN',
+        'Account Title',
+        'Market Place',
+        'Active',
+        *category_cols,
+        'Currency',
+        'Price',
+        'Sales Rank',
+        'Title',
+    ]
+    df = df[select_cols]
     df = df.sort_values(by=['Account Title', 'Category 0 Sales Rank'])
     df['Date'] = date
     return df
