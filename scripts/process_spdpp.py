@@ -67,6 +67,23 @@ def aggregate(df, include_sku=False):
     groupedDF = groupedDF.rename(columns={'YearMonth': 'Date'})
     return groupedDF
 
+def aggregate2(df, include_sku=False):
+    groupby = ['YearMonth','Account Title','Market Place','ASIN']
+    if include_sku:
+        groupby.append('SKU')
+    df['Date'] = pd.to_datetime(df['Date'])
+    df['YearMonth'] = df['Date'].map(lambda dt: dt.replace(day=1))
+    groupedDF = df.groupby(groupby).agg(columns_agg).reset_index()
+    groupedDF['Refund %'] = groupedDF['Refunded']/groupedDF['Orders']
+    groupedDF['Per Unit Revenue'] = groupedDF['Revenue']/groupedDF['Units']
+    groupedDF['Net Margin'] = groupedDF['Net Profit']/groupedDF['Revenue']
+    groupedDF['PPC Conv'] = groupedDF['PPC Orders']/groupedDF['PPC Clicks']
+    groupedDF['Unit Session %'] = groupedDF['Orders']/groupedDF['Sessions']
+    groupedDF = groupedDF.replace([np.inf, -np.inf], np.nan)
+    groupedDF = groupedDF.rename(columns={'YearMonth': 'Date'})
+    return groupedDF
+
+
 def filter(df, colname='Market Place', values=['US']):
     df = df[df[colname].isin(values)]
     return df

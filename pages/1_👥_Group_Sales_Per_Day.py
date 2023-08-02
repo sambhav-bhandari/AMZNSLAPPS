@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime
 
 # Import your custom function
-from scripts.process_spdpp import aggregate
+from scripts.process_spdpp import aggregate, aggregate2
 
 # Define Streamlit app
 def main():
@@ -30,7 +30,7 @@ def main():
 
         # Perform transformation using my_func
         try:
-            df = aggregate(df, include_sku=include_sku)
+            df = aggregate2(df, include_sku=include_sku)
             # Provide download link for transformed CSV
             st.header("Transformed CSV File")
             st.download_button(
